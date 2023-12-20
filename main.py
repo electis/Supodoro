@@ -3,10 +3,14 @@ from psgtray import SystemTray
 from datetime import datetime
 
 steps = {
-    0: ('Work', 60, sg.SYSTEM_TRAY_MESSAGE_ICON_INFORMATION),
-    1: ('Communicate', 30, sg.EMOJI_BASE64_FACEPALM),
-    2: ('Rest', 30, sg.SYSTEM_TRAY_MESSAGE_ICON_CRITICAL),
+    0: ('Концентрация', 60, sg.SYSTEM_TRAY_MESSAGE_ICON_INFORMATION),
+    1: ('Сопутствующая работа', 30, sg.EMOJI_BASE64_FACEPALM),
+    2: ('Отдых', 30, sg.SYSTEM_TRAY_MESSAGE_ICON_CRITICAL),
 }
+
+PAUSE = 'Пауза/Пуск'
+NEXT = 'Следующий этап'
+EXIT = 'Выход'
 
 
 def get_minute():
@@ -32,18 +36,19 @@ def loop(window, tray):
         if event == tray.key:
             event = values[event]
 
-        if event in (sg.WIN_CLOSED, 'Exit'):
+        if event in (sg.WIN_CLOSED, EXIT):
             tray.show_message('Выходим', 'Хорошего дня!')
             break
 
-        if event == 'Pause/Go':
+        if event in (PAUSE, sg.EVENT_SYSTEM_TRAY_ICON_ACTIVATED):
             pause = not pause
             if pause:
                 tray.change_icon(sg.ICON_BUY_ME_A_COFFEE)
+                tray.set_tooltip("Пауза")
             else:
                 tray.change_icon(steps[flag][2])
 
-        elif event == 'Next':
+        elif event == NEXT:
             flag, timer = change_flag(flag, tray)
             pause = False
 
@@ -59,18 +64,18 @@ def loop(window, tray):
 
 
 def main():
-    menu = ['', ['Pause/Go', 'Next', '---', 'Exit']]
     tooltip = 'Supodoro'
+    menu = ['', [PAUSE, NEXT, '---', EXIT]]
 
     layout = [[sg.T('Empty Window', key='-T-')]]
-
     window = sg.Window(tooltip, layout, finalize=True, enable_close_attempted_event=True, alpha_channel=0)
     window.hide()
 
     tray = SystemTray(
-        menu, single_click_events=False, window=window, tooltip=f"{steps[0][0]} {steps[0][1]}", icon=steps[0][2], key='-TRAY-'
+        menu, single_click_events=True, window=window,
+        tooltip=f"{steps[0][0]} {steps[0][1]}", icon=steps[0][2], key='-TRAY-'
     )
-    tray.show_message(tooltip, 'Go to work!')
+    tray.show_message(tooltip, 'Приступаем к работе!')
 
     loop(window, tray)
 
