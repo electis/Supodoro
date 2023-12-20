@@ -45,8 +45,10 @@ def loop(window, tray):
             if pause:
                 tray.change_icon(sg.ICON_BUY_ME_A_COFFEE)
                 tray.set_tooltip("Пауза")
+                tray.show_message('Пауза', f"{steps[flag][0]} {timer}")
             else:
                 tray.change_icon(steps[flag][2])
+                tray.show_message('Пуск', f"{steps[flag][0]} {timer}")
 
         elif event == NEXT:
             flag, timer = change_flag(flag, tray)
