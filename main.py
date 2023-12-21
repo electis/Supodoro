@@ -8,8 +8,8 @@ from datetime import datetime
 
 steps = {
     0: ('Концентрация', 60, 'green'),
-    1: ('Сопутствующая работа', 30, 'yellow'),
-    2: ('Отдых', 30, 'red'),
+    1: ('Сопутствующая работа', 30, 'orange'),
+    2: ('Отдых', 30, 'cyan'),
 }
 
 B_PAUSE = 'Пауза/Пуск'
@@ -66,7 +66,7 @@ def loop(window, tray):
         if event in (B_PAUSE, sg.EVENT_SYSTEM_TRAY_ICON_ACTIVATED):
             pause = not pause
             if pause:
-                tray.change_icon(generate_icon('||', 'blue'))
+                tray.change_icon(generate_icon('||', 'violet'))
                 tray.set_tooltip('Пауза')
                 tray.show_message('Пауза', f'{steps[flag][0]} {timer}')
             else:
